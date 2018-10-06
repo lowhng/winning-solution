@@ -1,7 +1,6 @@
 package com.example.lo_wh.saving;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -9,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -22,7 +22,7 @@ public class TopupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topup);
 
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.topup_toolbar);
+        Toolbar myToolbar = findViewById(R.id.topup_toolbar);
         setSupportActionBar(myToolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -54,20 +54,24 @@ public class TopupActivity extends AppCompatActivity {
                         && txtsn3.getText().length()==5){
                     String serialNumber = txtsn1.getText().toString() + txtsn2.getText().toString() + txtsn3.getText().toString();
 
-                    System.out.println(serialNumber);
-                    if(serialNumber.equals("000000000000010")){
-                        validSerialNumber = true;
-                        topUpCredits = 1000;
-                    }else if(serialNumber.equals("000000000000020")){
-                        validSerialNumber = true;
-                        topUpCredits = 2000;
-                    }else if(serialNumber.equals("000000000000050")){
-                        validSerialNumber = true;
-                        topUpCredits = 5000;
+                    Log.d("TopUp",serialNumber);
+                    switch(serialNumber){
+                        case "000000000000010":
+                            validSerialNumber = true;
+                            topUpCredits = 1000;
+                            break;
+                        case "000000000000020":
+                            validSerialNumber = true;
+                            topUpCredits = 2000;
+                            break;
+                        case "000000000000050":
+                            validSerialNumber = true;
+                            topUpCredits = 5000;
+                            break;
                     }
                 }
 
-                if(txtpin.getText().toString().equals("123456")){
+                if(txtpin.getText().toString().equals("123456") && validSerialNumber){
                     topUpState = true;
                 }
 
@@ -78,7 +82,7 @@ public class TopupActivity extends AppCompatActivity {
                     alertDialog.setMessage("Congratulations! " + topUpCredits + " credits has been added to your account!");
                 }else{
                     alertDialog.setTitle("Top Up Failed");
-                    alertDialog.setMessage("Please check if Serial Number is correct");
+                    alertDialog.setMessage("Please check if Serial Number and PIN Code is correct");
                 }
 
                 final Boolean dialogRedirect = topUpState;
@@ -111,13 +115,16 @@ public class TopupActivity extends AppCompatActivity {
 
             //Check length
             TextView curTextView = (TextView)getCurrentFocus();
-            if(curTextView.getText().toString().length() == 5){
-                //Move to next field
-                View nextTextView = curTextView.focusSearch(View.FOCUS_RIGHT);
-                if(nextTextView != null){
-                    nextTextView.requestFocus();
+            if(curTextView!=null){
+                if(curTextView.getText().toString().length() == 5){
+                    //Move to next field
+                    View nextTextView = curTextView.focusSearch(View.FOCUS_RIGHT);
+                    if(nextTextView != null){
+                        nextTextView.requestFocus();
+                    }
                 }
             }
+
         }
 
         @Override
