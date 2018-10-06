@@ -9,24 +9,80 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import java.util.HashMap;
+
 
 public class GameActivity extends AppCompatActivity {
 
     ImageView mImage_in;
     ImageView mImage_out;
+    final String imagePreset = "yellow_level";
+    HashMap<String,Integer> hashMap = new HashMap<String,Integer>()
+    {{
+        put("1",0);
+        put("2",0);
+        put("3",0);
+        put("4",0);
+        put("5",0);
+        put("6",0);
+        put("7",0);
+        put("8",0);
+        put("9",0);
+    }};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         mImage_in = findViewById(R.id.inside_imageview);
-        mImage_out = findViewById(R.id.outside_imageview);
-
         mImage_in.setAdjustViewBounds(true);
         mImage_in.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
-        findViewById(R.id.outside_imageview).setOnTouchListener(new dragTouchListener());
+        findViewById(R.id.btn_buy).setOnClickListener(new onClickListener());
+
+        //Drop
+        findViewById(R.id.outside_imageview1).setOnDragListener(new dragEventListener());
         findViewById(R.id.outside_imageview2).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview3).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview4).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview5).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview6).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview7).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview8).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview9).setOnDragListener(new dragEventListener());
+    }
+
+    private final class onClickListener implements View.OnClickListener {
+        @Override
+        public void onClick(View v){
+            boolean placed = false;
+            Integer i = 1;
+            for( ; i <= hashMap.size() && !placed ; i++){
+                String intConv = i.toString();
+                System.out.println("Iterating " + intConv);
+                System.out.println("Value = " + hashMap.get(intConv).toString());
+                if (hashMap.get(intConv).intValue() == 0){
+                    placed = true;
+                    Integer tempVal = hashMap.get(intConv);
+                    tempVal++;
+                    hashMap.put(intConv,tempVal);
+
+                    String newBuildingViewName = "outside_imageview" + intConv;
+                    int id = getResources().getIdentifier(newBuildingViewName,"id", GameActivity.this.getPackageName());
+                    System.out.println(id);
+
+                    ImageView newBuildingView = findViewById(id);
+                    //Set Level 1
+                    newBuildingView.setImageResource(R.drawable.white_level1);
+
+                    //Set Draggable
+                    newBuildingView.setOnTouchListener(new dragTouchListener());
+                }
+            }
+            if(!placed){
+                //No space
+            }
+        }
     }
 
     private final class dragTouchListener implements View.OnTouchListener {
@@ -47,6 +103,9 @@ public class GameActivity extends AppCompatActivity {
 
     protected class dragEventListener implements View.OnDragListener {
 
+        final String imagePrefix = "white_level";
+        final String viewPrefix = "outside_imageview";
+
         public boolean onDrag(View v, DragEvent event){
 
             int x_cord;
@@ -55,34 +114,36 @@ public class GameActivity extends AppCompatActivity {
             final int action = event.getAction();
 
             switch(action){
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    x_cord = (int) event.getX();
-                    y_cord = (int) event.getY();
-                    System.out.println("Entered at " + x_cord + "," + y_cord);
-                    break;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    x_cord = (int) event.getX();
-                    y_cord = (int) event.getY();
-                    System.out.println("Exited at " + x_cord + "," + y_cord);
-                    break;
-                case DragEvent.ACTION_DRAG_ENDED:
-                    x_cord = (int) event.getX();
-                    y_cord = (int) event.getY();
-                    System.out.println("Ended at " + x_cord + "," + y_cord);
-                    break;
                 case DragEvent.ACTION_DROP:
-                    x_cord = (int) event.getX();
-                    y_cord = (int) event.getY();
-                    View movedView = (View)event.getLocalState();
-                    System.out.println("Moving " + getResources().getResourceName(movedView.getId()));
-                    System.out.println("Dropped at " + x_cord + "," + y_cord);
-                    System.out.println("Dropped on " + getResources().getResourceName(v.getId()));
-                    ImageView targetView = (ImageView) v;
-                    targetView.setImageResource(R.drawable.yellow_level2);
-                    RelativeLayout motherLayout = (RelativeLayout)movedView.getParent();
-                    motherLayout.removeView(movedView);
+                    //Get required information
+                    ImageView movedView = (ImageView)event.getLocalState();
+                    String movedViewName = getResources().getResourceName(movedView.getId());
+                    String movedViewNumber = movedViewName.substring(movedViewName.indexOf(viewPrefix) + viewPrefix.length());
 
-                    break;
+                    ImageView targetView = (ImageView) v;
+                    String targetViewName = getResources().getResourceName(targetView.getId());
+                    String targetViewNumber = targetViewName.substring(targetViewName.indexOf(viewPrefix) + viewPrefix.length());
+
+                    System.out.println("Moving view" + movedViewNumber);
+                    System.out.println("Dropped on view" + targetViewNumber);
+
+                    //Add target level
+                    int targetLevel = hashMap.get(targetViewNumber);
+                    targetLevel++;
+                    hashMap.put(targetViewNumber, targetLevel);
+
+                    //Display new level
+                    int targetImageId = getResources().getIdentifier(imagePrefix + targetLevel,"drawable", GameActivity.this.getPackageName());
+                    targetView.setImageResource(targetImageId);
+
+                    //Reset moved level
+                    hashMap.put(movedViewNumber,0);
+
+                    //Display blank
+                    movedView.setImageResource(android.R.color.transparent);
+
+                    //Remove drag listener
+                    movedView.setOnDragListener(null);
             }
             return true;
         }
