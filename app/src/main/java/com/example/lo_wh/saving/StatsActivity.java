@@ -32,28 +32,19 @@ public class StatsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_stats);
 
         pieChart = (PieChart)findViewById(R.id.pieChart);
-
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setExtraOffsets(5, 10, 5, 5);
-
         pieChart.setDragDecelerationFrictionCoef(0.95f);
-
         pieChart.setCenterText(generateCenterSpannableText());
-
         pieChart.setExtraOffsets(20.f, 0.f, 20.f, 0.f);
-
         pieChart.setDrawHoleEnabled(true);
         pieChart.setHoleColor(Color.WHITE);
-
         pieChart.setTransparentCircleColor(Color.WHITE);
         pieChart.setTransparentCircleAlpha(110);
-
         pieChart.setHoleRadius(58f);
         pieChart.setTransparentCircleRadius(61f);
-
         pieChart.setDrawCenterText(true);
-
         pieChart.setRotationAngle(0);
         setData();
 
@@ -66,10 +57,7 @@ public class StatsActivity extends AppCompatActivity {
     }
 
     private void setData() {
-
-
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
@@ -109,7 +97,6 @@ public class StatsActivity extends AppCompatActivity {
 
         dataSet.setColors(colors);
         //dataSet.setSelectionShift(0f);
-
 
         dataSet.setValueLinePart1OffsetPercentage(80.f);
         dataSet.setValueLinePart1Length(0.2f);
