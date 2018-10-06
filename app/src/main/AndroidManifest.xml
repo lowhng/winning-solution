@@ -17,7 +17,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".GameActivity" />
-        <activity android:name=".StatsActivity" />
+        <activity android:name=".StatsActivity"
+            android:label="Saving Statistics"/>
         <activity android:name=".TopupActivity"
             android:label="Credits Top Up"
             android:parentActivityName=".MainActivity"
