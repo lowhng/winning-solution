@@ -1,7 +1,9 @@
 package com.example.lo_wh.saving;
 
+import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,7 +12,9 @@ import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -27,11 +31,14 @@ public class GameActivity extends AppCompatActivity {
     final String viewPrefix = "outside_imageview";
     ImageView mImage_in;
     HashMap<String,Integer> hashMap;
+    float savingsBalance;
+    long creditBalance;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        refresh();
 
         hashMap = new HashMap<>();
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("gameHashMap", Context.MODE_PRIVATE);
@@ -67,6 +74,7 @@ public class GameActivity extends AppCompatActivity {
         mImage_in.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         findViewById(R.id.btn_buy).setOnClickListener(new onClickListener());
+        findViewById(R.id.btn_refresh).setOnClickListener(new onClickUpdateListener());
 
         //Drop Listener
         findViewById(R.id.outside_imageview1).setOnDragListener(new dragEventListener());
@@ -119,41 +127,95 @@ public class GameActivity extends AppCompatActivity {
     private final class onClickListener implements View.OnClickListener {
         @Override
         public void onClick(View v){
-            boolean placed = false;
-            Integer i = 1;
-            for( ; i <= hashMap.size() && !placed ; i++){
-                String intConv = i.toString();
-                Log.d("NewBuildingPlacement","Iterating " + intConv);
-                Log.d("NewBuildingPlacement","Value = " + hashMap.get(intConv).toString());
-                if (hashMap.get(intConv) == 0){
-                    placed = true;
-                    Integer tempVal = hashMap.get(intConv);
-                    tempVal++;
-                    hashMap.put(intConv,tempVal);
+            if(creditBalance>=5000) {
+                final AlertDialog alertDialog = new AlertDialog.Builder(GameActivity.this).create();
+                alertDialog.setTitle("Confirm Action");
+                alertDialog.setMessage("Exchange 5000 coins for 1 building?");
+                alertDialog.setButton(AlertDialog.BUTTON_NEGATIVE, "Go Back",
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                alertDialog.dismiss();
+                            }
+                        });
+                alertDialog.setButton(AlertDialog.BUTTON_POSITIVE, "OK",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                boolean placed = false;
+                                Integer i = 1;
+                                for (; i <= hashMap.size() && !placed; i++) {
+                                    String intConv = i.toString();
+                                    Log.d("NewBuildingPlacement", "Iterating " + intConv);
+                                    Log.d("NewBuildingPlacement", "Value = " + hashMap.get(intConv).toString());
+                                    if (hashMap.get(intConv) == 0) {
+                                        placed = true;
 
-                    String newBuildingViewName = "outside_imageview" + intConv;
-                    Log.d("NewBuildingPlacement", "Found empty lot " + newBuildingViewName);
-                    int id = getResources().getIdentifier(newBuildingViewName,"id", GameActivity.this.getPackageName());
+                                        creditBalance -= 5000;
 
-                    ImageView newBuildingView = findViewById(id);
-                    //Set Level 1
-                    newBuildingView.setImageResource(R.drawable.white_level1);
+                                        Integer tempVal = hashMap.get(intConv);
+                                        tempVal++;
+                                        hashMap.put(intConv, tempVal);
 
-                    //Set Draggable
-                    newBuildingView.setOnTouchListener(new dragTouchListener());
+                                        String newBuildingViewName = "outside_imageview" + intConv;
+                                        Log.d("NewBuildingPlacement", "Found empty lot " + newBuildingViewName);
+                                        int id = getResources().getIdentifier(newBuildingViewName, "id", GameActivity.this.getPackageName());
 
-                    //Save Results to Shared Preferences
-                    saveResults();
+                                        ImageView newBuildingView = findViewById(id);
+                                        //Set Level 1
+                                        newBuildingView.setImageResource(R.drawable.white_level1);
+
+                                        //Set Draggable
+                                        newBuildingView.setOnTouchListener(new dragTouchListener());
+
+                                        //Save Results to Shared Preferences
+                                        saveResults();
+                                        saveBalance();
+                                        refresh();
+                                    }
+                                }
+                                if (!placed) {
+                                    //No space
+                                    Toast noSpaceToast = Toast.makeText(getApplicationContext(),
+                                            "No space remaining for new buildings, please merge existing buildings to continue",
+                                            Toast.LENGTH_LONG);
+                                    noSpaceToast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                                    noSpaceToast.show();
+                                }
+                            }
+                        });
+
+                alertDialog.show();
+            }else {
+                Toast insufficientFundsToast = Toast.makeText(getApplicationContext(),
+                        "Insufficient Balance to Purchase New Building",
+                        Toast.LENGTH_SHORT);
+                insufficientFundsToast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
+                insufficientFundsToast.show();
+            }
+        }
+    }
+
+    private final class onClickUpdateListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View v){
+            long totalIncome = 0l;
+            Iterator hashMapIterator = hashMap.entrySet().iterator();
+            while(hashMapIterator.hasNext()){
+                Map.Entry<String,Integer> keyValuePair = (Map.Entry<String, Integer>)hashMapIterator.next();
+                double multiplier = (double)keyValuePair.getValue();
+                Log.d("Income", "Multiplier: " + multiplier);
+                double specificIncome = 0d;
+                if(multiplier != 0d){
+                    specificIncome = 100 * Math.pow(3, multiplier);
                 }
+                Log.d("Income", "Specific Income: " + specificIncome);
+                totalIncome += (long)specificIncome;
+                Log.d("Income","Subtotal Income: " + totalIncome);
             }
-            if(!placed){
-                //No space
-                Toast noSpaceToast = Toast.makeText(getApplicationContext(),
-                        "No space remaining for new buildings, please merge existing buildings to continue",
-                        Toast.LENGTH_LONG);
-                noSpaceToast.setGravity(Gravity.CENTER_VERTICAL, 0, 0);
-                noSpaceToast.show();
-            }
+            creditBalance += totalIncome;
+            saveBalance();
+            refresh();
         }
     }
 
@@ -275,9 +337,32 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
+    private void saveBalance(){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
+        sharedPrefEditor.remove("savingsBalance").commit();
+        sharedPrefEditor.remove("creditBalance").commit();
+        Log.d("SaveBalance", "Savings Balance: " + savingsBalance);
+        Log.d("SaveBalance", "Credit Balance: " + creditBalance);
+        sharedPrefEditor.putFloat("savingsBalance", savingsBalance);
+        sharedPrefEditor.putLong("creditBalance", creditBalance);
+        sharedPrefEditor.commit();
+    }
+
     private void printJsonHashMap(JSONObject jsonHashMap){
         Log.d("JSONHashMap","===========Check============");
         Log.d("JSONHashMap", jsonHashMap.toString());
         Log.d("JSONHashMap","==========End=Check=========");
+    }
+
+    private void refresh(){
+        SharedPreferences sharedPrefBalance = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        if(sharedPrefBalance!=null){
+            savingsBalance = sharedPrefBalance.getFloat("savingsBalance", 100.0f);
+            creditBalance = sharedPrefBalance.getLong("creditBalance", 0l);
+        }
+
+        TextView txtCredit = findViewById(R.id.txt_credit);
+        txtCredit.setText(Long.toString(creditBalance));
     }
 }
