@@ -6,6 +6,8 @@
         android:id="@+id/inside_imageview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:src="@drawable/map_empty" />
 
     <ImageView
@@ -14,7 +16,7 @@
         android:layout_height="200dp"
         android:layout_alignTop="@id/inside_imageview"
         android:layout_marginLeft="25dp"
-        android:layout_marginTop="150dp"
+        android:layout_marginTop="15dp"
         android:src="@drawable/yellow_level1" />
 
     <ImageView
@@ -22,7 +24,7 @@
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:layout_alignTop="@id/inside_imageview"
-        android:layout_marginLeft="150dp"
-        android:layout_marginTop="215dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginTop="214dp"
         android:src="@drawable/yellow_level1" />
 </RelativeLayout>

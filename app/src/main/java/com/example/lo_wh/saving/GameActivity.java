@@ -7,6 +7,7 @@ import android.view.DragEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -25,7 +26,7 @@ public class GameActivity extends AppCompatActivity {
         mImage_in.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         findViewById(R.id.outside_imageview).setOnTouchListener(new dragTouchListener());
-        findViewById(R.id.outside_imageview).setOnDragListener(new dragEventListener());
+        findViewById(R.id.outside_imageview2).setOnDragListener(new dragEventListener());
     }
 
     private final class dragTouchListener implements View.OnTouchListener {
@@ -47,6 +48,7 @@ public class GameActivity extends AppCompatActivity {
     protected class dragEventListener implements View.OnDragListener {
 
         public boolean onDrag(View v, DragEvent event){
+
             int x_cord;
             int y_cord;
 
@@ -63,10 +65,24 @@ public class GameActivity extends AppCompatActivity {
                     y_cord = (int) event.getY();
                     System.out.println("Exited at " + x_cord + "," + y_cord);
                     break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    x_cord = (int) event.getX();
+                    y_cord = (int) event.getY();
+                    System.out.println("Ended at " + x_cord + "," + y_cord);
+                    break;
                 case DragEvent.ACTION_DROP:
                     x_cord = (int) event.getX();
                     y_cord = (int) event.getY();
+                    View movedView = (View)event.getLocalState();
+                    System.out.println("Moving " + getResources().getResourceName(movedView.getId()));
                     System.out.println("Dropped at " + x_cord + "," + y_cord);
+                    System.out.println("Dropped on " + getResources().getResourceName(v.getId()));
+                    ImageView targetView = (ImageView) v;
+                    targetView.setImageResource(R.drawable.yellow_level2);
+                    RelativeLayout motherLayout = (RelativeLayout)movedView.getParent();
+                    motherLayout.removeView(movedView);
+
+                    break;
             }
             return true;
         }
