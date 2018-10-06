@@ -5,14 +5,12 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.JsonReader;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import org.json.JSONException;
@@ -107,7 +105,7 @@ public class GameActivity extends AppCompatActivity {
 
             String curImageViewIdString = viewPrefix + keyValuePair.getKey();
             int curImageViewId = getResources().getIdentifier(curImageViewIdString,"id", GameActivity.this.getPackageName());
-            ImageView curImageView = (ImageView)findViewById(curImageViewId);
+            ImageView curImageView = findViewById(curImageViewId);
 
             if(keyValuePair.getValue() != 0){
                 String curImageIdString = imagePrefix + keyValuePair.getValue().toString();
@@ -127,7 +125,7 @@ public class GameActivity extends AppCompatActivity {
                 String intConv = i.toString();
                 Log.d("NewBuildingPlacement","Iterating " + intConv);
                 Log.d("NewBuildingPlacement","Value = " + hashMap.get(intConv).toString());
-                if (hashMap.get(intConv).intValue() == 0){
+                if (hashMap.get(intConv) == 0){
                     placed = true;
                     Integer tempVal = hashMap.get(intConv);
                     tempVal++;
