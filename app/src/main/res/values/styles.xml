@@ -10,10 +10,10 @@
 
     <style name="MyProgressBarTwo" parent="@style/Widget.AppCompat.ProgressBar.Horizontal">
         <item name="colorButtonNormal">#f50057</item>
-        <item name="colorControlActivated">#33691e</item>
-        <item name="colorControlHighlight">#ff6d00</item>
+        <item name="colorControlActivated">#ff6d00</item>
         <item name="android:progressDrawable">@drawable/progressbar</item>
         <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
         <item name="android:layout_marginBottom">30dp</item>
         <item name="android:minWidth">200dp</item>
     </style>

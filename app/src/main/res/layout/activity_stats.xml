@@ -65,20 +65,24 @@
             android:layout_marginLeft="25dp"
             android:text="Savings Target"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="25dp"
+            android:text="RM150 / RM200 saved"/>
+
+
+
         <ProgressBar
             android:id="@+id/progressBar5"
             style="@style/MyProgressBarTwo"
             android:theme="@style/MyProgressBarTwo"
-            android:progress="30"
-            android:layout_width="wrap_content"
+            android:progress="75"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:secondaryProgress="60"/>
-
-
-
+            android:layout_marginTop="8dp" />
 
     </LinearLayout>
 
