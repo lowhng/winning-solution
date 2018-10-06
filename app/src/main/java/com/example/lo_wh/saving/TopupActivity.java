@@ -7,6 +7,8 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -27,12 +29,21 @@ public class TopupActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
+        EditText txt1 = findViewById(R.id.txt_sn1);
+        EditText txt2 = findViewById(R.id.txt_sn2);
+        EditText txt3 = findViewById(R.id.txt_sn3);
+
+        txt1.addTextChangedListener(new onTextChange());
+        txt2.addTextChangedListener(new onTextChange());
+        txt3.addTextChangedListener(new onTextChange());
+
         final Button button = findViewById(R.id.btn_topup);
         button.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Boolean validSerialNumber = false;
                 Boolean topUpState = false;
                 int topUpCredits = 0;
+
                 EditText txtsn1 = findViewById(R.id.txt_sn1);
                 EditText txtsn2 = findViewById(R.id.txt_sn2);
                 EditText txtsn3 = findViewById(R.id.txt_sn3);
@@ -93,5 +104,31 @@ public class TopupActivity extends AppCompatActivity {
         return true;
     }
 
+    private final class onTextChange implements TextWatcher {
 
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count){
+
+            //Check length
+            TextView curTextView = (TextView)getCurrentFocus();
+            if(curTextView.getText().toString().length() == 5){
+                //Move to next field
+                View nextTextView = curTextView.focusSearch(View.FOCUS_RIGHT);
+                if(nextTextView != null){
+                    nextTextView.requestFocus();
+                }
+            }
+        }
+
+        @Override
+        public void beforeTextChanged(CharSequence s, int start,
+                                      int count, int after) {
+            //No Code
+        }
+
+        @Override
+        public void afterTextChanged(Editable s){
+            //No Code
+        }
+    }
 }
