@@ -1,7 +1,10 @@
 package com.example.lo_wh.saving;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -9,20 +12,32 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.PercentFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
-public class StatsActivity extends AppCompatActivity {
+public class StatsActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
     PieChart pieChart;
 
@@ -31,7 +46,7 @@ public class StatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
-        pieChart = (PieChart)findViewById(R.id.pieChart);
+        pieChart = (PieChart) findViewById(R.id.pieChart);
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setExtraOffsets(5, 10, 5, 5);
@@ -46,7 +61,11 @@ public class StatsActivity extends AppCompatActivity {
         pieChart.setTransparentCircleRadius(61f);
         pieChart.setDrawCenterText(true);
         pieChart.setRotationAngle(0);
+        pieChart.setOnChartValueSelectedListener(this);
         setData();
+
+
+        pieChart.animateXY(1400, 1400);
 
         Legend l = pieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -54,6 +73,44 @@ public class StatsActivity extends AppCompatActivity {
         l.setOrientation(Legend.LegendOrientation.VERTICAL);
         l.setDrawInside(false);
         l.setEnabled(true);
+        // get je_input_dialog.xml view
+
+
+        Button addTarget = findViewById(R.id.addTargetBtn);
+        addTarget.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater layoutInflater = LayoutInflater.from(StatsActivity.this);
+                View promptView = layoutInflater.inflate(R.layout.input_target, null);
+                final TextView target2 = findViewById(R.id.target2);
+                final ProgressBar progress = findViewById(R.id.progressBar6);
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(StatsActivity.this);
+                alertDialogBuilder.setView(promptView);
+                final EditText editText = (EditText) promptView.findViewById(R.id.je_input_dialog_input);
+                // setup a dialog window
+
+                alertDialogBuilder.setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                //get text and set new view
+                                String customTarget = editText.getText().toString();
+                                target2.setText("RM 0 / RM " + customTarget + " saved");
+                                target2.setVisibility(View.VISIBLE);
+                                progress.setVisibility(View.VISIBLE);
+                            }
+                        })
+                        .setNegativeButton("Cancel",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                });
+
+                // create an alert dialog
+                AlertDialog alert = alertDialogBuilder.create();
+                alert.show();
+            }
+        });
     }
 
     private void setData() {
@@ -68,7 +125,7 @@ public class StatsActivity extends AppCompatActivity {
         entries.add(new PieEntry(50, "May"));
         entries.add(new PieEntry(100, "June"));
 
-        PieDataSet dataSet = new PieDataSet(entries, "Test");
+        PieDataSet dataSet = new PieDataSet(entries, "Months");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
@@ -127,4 +184,31 @@ public class StatsActivity extends AppCompatActivity {
         s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 5, s.length(), 0);
         return s;
     }
+
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+
+        if (e == null)
+            return;
+        Log.i("VAL SELECTED",
+                "Value: " + e.getY() + ", xIndex: " + e.getX()
+                        + ", DataSet index: " + h.getDataSetIndex());
+
+        //dialog box to let user know savings of the month
+        AlertDialog alertDialog = new AlertDialog.Builder(StatsActivity.this).create();
+        alertDialog.setTitle("Savings amount");
+        alertDialog.setMessage("You have saved RM " + e.getY() + "! \nKeep it up!");
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Got it!",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+        alertDialog.show();
+    }
+
+    @Override
+    public void onNothingSelected() {
+        Log.i("PieChart", "nothing selected");
+    }
+
 }
