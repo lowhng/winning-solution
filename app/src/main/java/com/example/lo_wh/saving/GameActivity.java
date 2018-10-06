@@ -39,7 +39,7 @@ public class GameActivity extends AppCompatActivity {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("gameHashMap", Context.MODE_PRIVATE);
         try {
             if (sharedPref != null) {
-                System.out.println("Shared Preferences Found!");
+                Log.d("InitGame","Shared Preferences Found!");
                 JSONObject jsonHashMap = new JSONObject(sharedPref.getString("hashMap", (new JSONObject()).toString()));
                 printJsonHashMap(jsonHashMap);
                 Iterator<String> keyIterator = jsonHashMap.keys();
@@ -48,7 +48,7 @@ public class GameActivity extends AppCompatActivity {
                     hashMap.put(currentKey,jsonHashMap.getInt(currentKey));
                 }
             } else {
-                System.out.println("Shared Preferences Not Found!");
+                Log.d("InitGame","Shared Preferences Not Found!");
                 hashMap = null;
             }
         }catch(JSONException e){
