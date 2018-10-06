@@ -1,11 +1,19 @@
 package com.example.lo_wh.saving;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.StyleSpan;
+import android.util.Log;
 import android.widget.LinearLayout;
 
+import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
@@ -13,7 +21,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class StatsActivity extends AppCompatActivity {
 
@@ -24,15 +31,15 @@ public class StatsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
-
-        //LinearLayout linearLayout = findViewById(R.id.chart_linear);
-        //pieChart = (PieChart)findViewById(R.id.pieChart);
+        pieChart = (PieChart)findViewById(R.id.pieChart);
 
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setExtraOffsets(5, 10, 5, 5);
 
         pieChart.setDragDecelerationFrictionCoef(0.95f);
+
+        pieChart.setCenterText(generateCenterSpannableText());
 
         pieChart.setExtraOffsets(20.f, 0.f, 20.f, 0.f);
 
@@ -49,6 +56,13 @@ public class StatsActivity extends AppCompatActivity {
 
         pieChart.setRotationAngle(0);
         setData();
+
+        Legend l = pieChart.getLegend();
+        l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+        l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+        l.setOrientation(Legend.LegendOrientation.VERTICAL);
+        l.setDrawInside(false);
+        l.setEnabled(true);
     }
 
     private void setData() {
@@ -59,16 +73,20 @@ public class StatsActivity extends AppCompatActivity {
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
-        entries.add(new PieEntry(18.5f, "Green"));
-        entries.add(new PieEntry(26.7f, "Yellow"));
-        entries.add(new PieEntry(24.0f, "Red"));
-        entries.add(new PieEntry(30.8f, "Blue"));
+        entries.add(new PieEntry(100, "January"));
+        entries.add(new PieEntry(130, "February"));
+        entries.add(new PieEntry(80, "March"));
+        entries.add(new PieEntry(150, "April"));
+        entries.add(new PieEntry(50, "May"));
+        entries.add(new PieEntry(100, "June"));
 
         PieDataSet dataSet = new PieDataSet(entries, "Test");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
 
         // add a lot of colors
+
+        Log.d("TEST", "test");
 
         ArrayList<Integer> colors = new ArrayList<Integer>();
 
@@ -111,5 +129,15 @@ public class StatsActivity extends AppCompatActivity {
         pieChart.highlightValues(null);
 
         pieChart.invalidate();
+    }
+
+    private SpannableString generateCenterSpannableText() {
+
+        SpannableString s = new SpannableString("Savings of 2018\nCurrent Savings RM560");
+        s.setSpan(new RelativeSizeSpan(1.5f), 0, 15, 0);
+        s.setSpan(new StyleSpan(Typeface.NORMAL), 15, s.length() - 15, 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 5, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 5, s.length(), 0);
+        return s;
     }
 }

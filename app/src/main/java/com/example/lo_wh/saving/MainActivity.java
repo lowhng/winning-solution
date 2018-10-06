@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
         statsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent stats = new Intent(MainActivity.this,GameActivity.class);
+                Intent stats = new Intent(MainActivity.this,StatsActivity.class);
                 startActivity(stats);
             }
         });
