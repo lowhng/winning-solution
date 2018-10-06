@@ -143,7 +143,7 @@ public class GameActivity extends AppCompatActivity {
                     movedView.setImageResource(android.R.color.transparent);
 
                     //Remove drag listener
-                    movedView.setOnDragListener(null);
+                    movedView.setOnClickListener(null);
             }
             return true;
         }
