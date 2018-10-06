@@ -1,7 +1,6 @@
 package com.example.lo_wh.saving;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
@@ -16,12 +15,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -32,8 +28,6 @@ import com.github.mikephil.charting.formatter.PercentFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -46,7 +40,7 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
-        pieChart = (PieChart) findViewById(R.id.pieChart);
+        pieChart = findViewById(R.id.pieChart);
         pieChart.setUsePercentValues(true);
         pieChart.getDescription().setEnabled(false);
         pieChart.setExtraOffsets(5, 10, 5, 5);
@@ -86,7 +80,7 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
                 final ProgressBar progress = findViewById(R.id.progressBar6);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(StatsActivity.this);
                 alertDialogBuilder.setView(promptView);
-                final EditText editText = (EditText) promptView.findViewById(R.id.je_input_dialog_input);
+                final EditText editText = promptView.findViewById(R.id.je_input_dialog_input);
                 // setup a dialog window
 
                 alertDialogBuilder.setCancelable(false)
@@ -94,7 +88,8 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
                             public void onClick(DialogInterface dialog, int id) {
                                 //get text and set new view
                                 String customTarget = editText.getText().toString();
-                                target2.setText("RM 0 / RM " + customTarget + " saved");
+                                String toFill = "RM 0 / RM " + customTarget + " saved";
+                                target2.setText(toFill);
                                 target2.setVisibility(View.VISIBLE);
                                 progress.setVisibility(View.VISIBLE);
                             }
@@ -114,7 +109,7 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
     }
 
     private void setData() {
-        ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
+        ArrayList<PieEntry> entries = new ArrayList<>();
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
         // the chart.
@@ -133,7 +128,7 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
 
         Log.d("TEST", "test");
 
-        ArrayList<Integer> colors = new ArrayList<Integer>();
+        ArrayList<Integer> colors = new ArrayList<>();
 
         for (int c : ColorTemplate.VORDIPLOM_COLORS)
             colors.add(c);
