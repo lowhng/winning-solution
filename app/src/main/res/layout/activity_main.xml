@@ -11,30 +11,40 @@
         android:id="@+id/imageView"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp"
         android:layout_gravity="center"
         android:src="@drawable/logo_main" />
 
-    <Button
-        android:id="@+id/game_Btn"
-        android:layout_width="150dp"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:textStyle="bold"
+        android:text="Savings: Rm560"
+        android:textSize="24dp"
+        android:textColor="#000000"/>
+
+    <Button
+        android:id="@+id/game_Btn"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        style="@style/MainButton"
         android:text="Enter Game"/>
 
     <Button
         android:id="@+id/stats_Btn"
-        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        style="@style/MainButton"
         android:text="Statistics"/>
 
     <Button
         android:id="@+id/topup_Btn"
-        android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        style="@style/MainButton"
         android:text="Top Up"/>
 
 </LinearLayout>
