@@ -1,7 +1,9 @@
 package com.example.lo_wh.saving;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,8 +19,17 @@ import android.widget.TextView;
 
 public class TopupActivity extends AppCompatActivity {
 
+    float savingsBalance;
+    long creditBalance;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        if(sharedPref!=null){
+            savingsBalance = sharedPref.getFloat("savingsBalance", 100.0f);
+            creditBalance = sharedPref.getLong("creditBalance", 0l);
+        }
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_topup);
 
@@ -43,6 +54,7 @@ public class TopupActivity extends AppCompatActivity {
                 Boolean validSerialNumber = false;
                 Boolean topUpState = false;
                 int topUpCredits = 0;
+                float topUpSavings = 0.0f;
 
                 EditText txtsn1 = findViewById(R.id.txt_sn1);
                 EditText txtsn2 = findViewById(R.id.txt_sn2);
@@ -59,14 +71,17 @@ public class TopupActivity extends AppCompatActivity {
                         case "000000000000010":
                             validSerialNumber = true;
                             topUpCredits = 1000;
+                            topUpSavings = 10.0f;
                             break;
                         case "000000000000020":
                             validSerialNumber = true;
                             topUpCredits = 2000;
+                            topUpSavings = 20.0f;
                             break;
                         case "000000000000050":
                             validSerialNumber = true;
                             topUpCredits = 5000;
+                            topUpSavings = 50.0f;
                             break;
                     }
                 }
@@ -78,6 +93,9 @@ public class TopupActivity extends AppCompatActivity {
                 final AlertDialog alertDialog = new AlertDialog.Builder(TopupActivity.this).create();
 
                 if(topUpState){
+                    creditBalance += topUpCredits;
+                    savingsBalance += topUpSavings;
+                    saveBalance();
                     alertDialog.setTitle("Top Up Successful");
                     alertDialog.setMessage("Congratulations! " + topUpCredits + " credits has been added to your account!");
                 }else{
@@ -136,6 +154,25 @@ public class TopupActivity extends AppCompatActivity {
         @Override
         public void afterTextChanged(Editable s){
             //No Code
+        }
+    }
+
+    private void saveBalance(){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
+        sharedPrefEditor.remove("savingsBalance").commit();
+        sharedPrefEditor.remove("creditBalance").commit();
+        Log.d("SaveBalance", "Savings Balance: " + savingsBalance);
+        Log.d("SaveBalance", "Credit Balance: " + creditBalance);
+        sharedPrefEditor.putFloat("savingsBalance", savingsBalance);
+        sharedPrefEditor.putLong("creditBalance", creditBalance);
+        sharedPrefEditor.commit();
+
+        //Check Shared Preferences
+        SharedPreferences sharedPrefCheck = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        if(sharedPrefCheck!=null){
+            Log.d("SharedPrefSaveCheck", Float.toString(sharedPrefCheck.getFloat("savingsBalance", 100.0f)));
+            Log.d("SharedPrefSaveCheck", Long.toString(sharedPrefCheck.getLong("accountBalance",0l)));
         }
     }
 }
