@@ -58,7 +58,7 @@ public class GameActivity extends AppCompatActivity {
             e.printStackTrace();
             hashMap = null;
         }
-        if (hashMap == null){
+        if (hashMap == null || hashMap.size() == 0){
             initHashMap();
         }else{
             initialRender();
@@ -195,29 +195,62 @@ public class GameActivity extends AppCompatActivity {
                     Log.d("DragEvent","Moving " + viewPrefix + movedViewNumber);
                     Log.d("DragEvent","Dropped on " + viewPrefix + targetViewNumber);
 
-                    //Add target level
+                    //Check if moved and target are at same level
+                    int movedLevel = hashMap.get(movedViewNumber);
                     int targetLevel = hashMap.get(targetViewNumber);
-                    targetLevel++;
-                    hashMap.put(targetViewNumber, targetLevel);
 
-                    //Display new level
-                    int targetImageId = getResources().getIdentifier(imagePrefix + targetLevel,"drawable", GameActivity.this.getPackageName());
-                    targetView.setImageResource(targetImageId);
+                    if(movedLevel == targetLevel){
+                        //Same level, add target level
+                        targetLevel++;
+                        hashMap.put(targetViewNumber, targetLevel);
 
-                    //Set listener (in case of level 0 -> 1
-                    targetView.setOnTouchListener(new dragTouchListener());
+                        //Display new level
+                        int targetImageId = getResources().getIdentifier(imagePrefix + targetLevel,"drawable", GameActivity.this.getPackageName());
+                        targetView.setImageResource(targetImageId);
 
-                    //Reset moved level
-                    hashMap.put(movedViewNumber,0);
+                        //Reset moved level
+                        hashMap.put(movedViewNumber,0);
 
-                    //Display blank
-                    movedView.setImageResource(android.R.color.transparent);
+                        //Display blank
+                        movedView.setImageResource(android.R.color.transparent);
 
-                    //Remove drag listener
-                    movedView.setOnTouchListener(null);
+                        //Remove drag listener for moved view
+                        movedView.setOnTouchListener(null);
 
-                    //Save to Shared Preferences
-                    saveResults();
+                        //Save to Shared Preferences
+                        saveResults();
+
+                    }else if (targetLevel == 0){
+                        //Target Level 0, Move Building
+                        targetLevel = movedLevel;
+                        hashMap.put(targetViewNumber, targetLevel);
+
+                        //Display new level
+                        int targetImageId = getResources().getIdentifier(imagePrefix + targetLevel,"drawable", GameActivity.this.getPackageName());
+                        targetView.setImageResource(targetImageId);
+
+                        //Set listener (in case of level 0 -> 1
+                        targetView.setOnTouchListener(new dragTouchListener());
+
+                        //Reset moved level
+                        hashMap.put(movedViewNumber,0);
+
+                        //Display blank
+                        movedView.setImageResource(android.R.color.transparent);
+
+                        //Remove drag listener for moved view
+                        movedView.setOnTouchListener(null);
+
+                        //Save to Shared Preferences
+                        saveResults();
+
+                    }else{
+                        Toast incorrectLevelToast = Toast.makeText(getApplicationContext(),
+                                "Buildings must be of same level to merge",
+                                Toast.LENGTH_SHORT);
+                        incorrectLevelToast.setGravity(Gravity.CENTER_VERTICAL,0,0);
+                        incorrectLevelToast.show();
+                    }
             }
             return true;
         }
