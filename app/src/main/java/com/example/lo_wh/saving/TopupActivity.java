@@ -117,6 +117,21 @@ public class TopupActivity extends AppCompatActivity {
                 alertDialog.show();
             }
         });
+
+        findViewById(R.id.lbl_pin).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EditText txtsn1 = findViewById(R.id.txt_sn1);
+                EditText txtsn2 = findViewById(R.id.txt_sn2);
+                EditText txtsn3 = findViewById(R.id.txt_sn3);
+                EditText txtpin = findViewById(R.id.txt_pin);
+
+                txtsn1.setText("00000");
+                txtsn2.setText("00000");
+                txtsn3.setText("00050");
+                txtpin.setText("123456");
+            }
+        });
     }
 
     @Override
