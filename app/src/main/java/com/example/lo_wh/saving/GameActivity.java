@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -35,6 +36,7 @@ public class GameActivity extends AppCompatActivity {
     float savingsBalance;
     long creditBalance;
     ImageButton refreshBtn;
+    ImageButton friendsBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,9 +78,17 @@ public class GameActivity extends AppCompatActivity {
         mImage_in.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
         refreshBtn = findViewById(R.id.btn_refresh);
+        friendsBtn = findViewById(R.id.btn_friend);
 
         findViewById(R.id.btn_buy).setOnClickListener(new onClickListener());
         refreshBtn.setOnClickListener(new onClickUpdateListener());
+        friendsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent friend = new Intent(GameActivity.this,FriendActivity.class);
+                startActivity(friend);
+            }
+        });
 
         //Drop Listener
         findViewById(R.id.outside_imageview1).setOnDragListener(new dragEventListener());
@@ -386,7 +396,7 @@ public class GameActivity extends AppCompatActivity {
     private void refresh(){
         SharedPreferences sharedPrefBalance = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
         if(sharedPrefBalance!=null){
-            savingsBalance = sharedPrefBalance.getFloat("savingsBalance", 100.0f);
+            savingsBalance = sharedPrefBalance.getFloat("savingsBalance", 1080.0f);
             creditBalance = sharedPrefBalance.getLong("creditBalance", 0l);
         }
 

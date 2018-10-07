@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     float savingsBalance;
     long creditBalance;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 

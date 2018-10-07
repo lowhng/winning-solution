@@ -121,5 +121,14 @@
         android:src="@drawable/fastforward"
         android:scaleType="fitXY"/>
 
+    <ImageButton
+        android:id="@+id/btn_friend"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/btn_refresh"
+        android:src="@drawable/globe"
+        android:scaleType="fitXY"/>
+
 
 </RelativeLayout>

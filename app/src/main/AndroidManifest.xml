@@ -30,6 +30,7 @@
             android:label="Credits Top Up"
             android:parentActivityName=".MainActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity android:name=".FriendActivity"></activity>
     </application>
 
 </manifest>
