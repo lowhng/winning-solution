@@ -280,6 +280,9 @@ public class GameActivity extends AppCompatActivity {
                         //Save to Shared Preferences
                         saveResults();
 
+                        //Additional Rewards
+                        checkReward(targetLevel);
+
                     }else if (targetLevel == 0){
                         //Target Level 0, Move Building
                         targetLevel = movedLevel;
@@ -313,6 +316,27 @@ public class GameActivity extends AppCompatActivity {
                     }
             }
             return true;
+        }
+    }
+
+    private void checkReward(int level){
+        if(level == 3){
+            final AlertDialog rewardDialog = new AlertDialog.Builder(GameActivity.this).create();
+
+            rewardDialog.setTitle("Congratulations");
+            rewardDialog.setMessage("You've reached Building Level 3 for the first time! We're giving you 10000 credits for your hard work!");
+            rewardDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            rewardDialog.dismiss();
+                            creditBalance += 10000l;
+                            saveBalance();
+                            refresh();
+                        }
+                    });
+
+            rewardDialog.show();
+
         }
     }
 
