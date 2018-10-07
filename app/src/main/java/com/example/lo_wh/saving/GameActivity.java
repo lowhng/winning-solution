@@ -13,6 +13,7 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -33,6 +34,7 @@ public class GameActivity extends AppCompatActivity {
     HashMap<String,Integer> hashMap;
     float savingsBalance;
     long creditBalance;
+    ImageButton refreshBtn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +75,10 @@ public class GameActivity extends AppCompatActivity {
         mImage_in.setAdjustViewBounds(true);
         mImage_in.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
+        refreshBtn = findViewById(R.id.btn_refresh);
+
         findViewById(R.id.btn_buy).setOnClickListener(new onClickListener());
-        findViewById(R.id.btn_refresh).setOnClickListener(new onClickUpdateListener());
+        refreshBtn.setOnClickListener(new onClickUpdateListener());
 
         //Drop Listener
         findViewById(R.id.outside_imageview1).setOnDragListener(new dragEventListener());

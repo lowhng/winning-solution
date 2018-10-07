@@ -1,6 +1,8 @@
 package com.example.lo_wh.saving;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.app.AlertDialog;
@@ -34,11 +36,21 @@ import java.util.ArrayList;
 public class StatsActivity extends AppCompatActivity implements OnChartValueSelectedListener {
 
     PieChart pieChart;
+    float savingsBalance;
+    long creditBalance;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
+
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        if(sharedPref!=null){
+            savingsBalance = sharedPref.getFloat("savingsBalance", 1080.0f);
+            creditBalance = sharedPref.getLong("creditBalance", 0l);
+        }
 
         pieChart = findViewById(R.id.pieChart);
         pieChart.setUsePercentValues(true);
@@ -56,10 +68,10 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
         pieChart.setDrawCenterText(true);
         pieChart.setRotationAngle(0);
         pieChart.setOnChartValueSelectedListener(this);
-        setData();
+        setData((int)savingsBalance);
 
 
-        pieChart.animateXY(1400, 1400);
+        //pieChart.animateXY(1400, 1400);
 
         Legend l = pieChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -108,7 +120,7 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
         });
     }
 
-    private void setData() {
+    private void setData(int savingBalance) {
         ArrayList<PieEntry> entries = new ArrayList<>();
 
         // NOTE: The order of the entries when being added to the entries array determines their position around the center of
@@ -119,6 +131,10 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
         entries.add(new PieEntry(150, "April"));
         entries.add(new PieEntry(50, "May"));
         entries.add(new PieEntry(100, "June"));
+        entries.add(new PieEntry(160, "July"));
+        entries.add(new PieEntry(200, "August"));
+        entries.add(new PieEntry(110, "September"));
+        entries.add(new PieEntry(savingBalance - 1080, "October"));
 
         PieDataSet dataSet = new PieDataSet(entries, "Months");
         dataSet.setSliceSpace(3f);
@@ -172,11 +188,11 @@ public class StatsActivity extends AppCompatActivity implements OnChartValueSele
 
     private SpannableString generateCenterSpannableText() {
 
-        SpannableString s = new SpannableString("Savings of 2018\nCurrent Savings RM560");
+        SpannableString s = new SpannableString("Savings of 2018\nCurrent Savings RM" + savingsBalance);
         s.setSpan(new RelativeSizeSpan(1.5f), 0, 15, 0);
         s.setSpan(new StyleSpan(Typeface.NORMAL), 15, s.length() - 15, 0);
-        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 5, s.length(), 0);
-        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 5, s.length(), 0);
+        s.setSpan(new StyleSpan(Typeface.ITALIC), s.length() - 6, s.length(), 0);
+        s.setSpan(new ForegroundColorSpan(ColorTemplate.getHoloBlue()), s.length() - 6, s.length(), 0);
         return s;
     }
 
