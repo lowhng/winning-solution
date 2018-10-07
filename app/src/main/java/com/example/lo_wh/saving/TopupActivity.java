@@ -26,7 +26,7 @@ public class TopupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
         if(sharedPref!=null){
-            savingsBalance = sharedPref.getFloat("savingsBalance", 100.0f);
+            savingsBalance = sharedPref.getFloat("savingsBalance", 1080.0f);
             creditBalance = sharedPref.getLong("creditBalance", 0l);
         }
 
@@ -171,7 +171,7 @@ public class TopupActivity extends AppCompatActivity {
         //Check Shared Preferences
         SharedPreferences sharedPrefCheck = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
         if(sharedPrefCheck!=null){
-            Log.d("SharedPrefSaveCheck", Float.toString(sharedPrefCheck.getFloat("savingsBalance", 100.0f)));
+            Log.d("SharedPrefSaveCheck", Float.toString(sharedPrefCheck.getFloat("savingsBalance", 1080.0f)));
             Log.d("SharedPrefSaveCheck", Long.toString(sharedPrefCheck.getLong("accountBalance",0l)));
         }
     }

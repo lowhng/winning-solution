@@ -14,6 +14,9 @@ import java.math.BigDecimal;
 
 public class MainActivity extends AppCompatActivity {
 
+    float savingsBalance;
+    long creditBalance;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -21,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         refresh();
+
 
         Button gameBtn = findViewById(R.id.game_Btn);
         Button statsBtn = findViewById(R.id.stats_Btn);
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         float savingsBalance;
         long creditBalance;
         if(sharedPref!=null){
-            savingsBalance = sharedPref.getFloat("savingsBalance", 100.0f);
+            savingsBalance = sharedPref.getFloat("savingsBalance", 1080.0f);
             Log.d("LoadBalance", "Savings Balance: " + savingsBalance);
             creditBalance = sharedPref.getLong("creditBalance", 0l);
             Log.d("LoadBalance", "Credit Balance: " + creditBalance);
@@ -75,5 +79,24 @@ public class MainActivity extends AppCompatActivity {
         BigDecimal displayBalance = new BigDecimal(savingsBalance);
         displayBalance = displayBalance.setScale(2,BigDecimal.ROUND_HALF_UP);
         balance.setText("Savings: RM" + displayBalance.toString());
+    }
+
+    private void saveBalance(){
+        SharedPreferences sharedPref = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        SharedPreferences.Editor sharedPrefEditor = sharedPref.edit();
+        sharedPrefEditor.remove("savingsBalance").commit();
+        sharedPrefEditor.remove("creditBalance").commit();
+        Log.d("SaveBalance", "Savings Balance: " + savingsBalance);
+        Log.d("SaveBalance", "Credit Balance: " + creditBalance);
+        sharedPrefEditor.putFloat("savingsBalance", savingsBalance);
+        sharedPrefEditor.putLong("creditBalance", creditBalance);
+        sharedPrefEditor.commit();
+
+        //Check Shared Preferences
+        SharedPreferences sharedPrefCheck = getApplicationContext().getSharedPreferences("accountBalance", Context.MODE_PRIVATE);
+        if(sharedPrefCheck!=null){
+            Log.d("SharedPrefSaveCheck", Float.toString(sharedPrefCheck.getFloat("savingsBalance", 1080.0f)));
+            Log.d("SharedPrefSaveCheck", Long.toString(sharedPrefCheck.getLong("accountBalance",0l)));
+        }
     }
 }
